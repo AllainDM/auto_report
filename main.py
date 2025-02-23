@@ -19,10 +19,13 @@ dp = Dispatcher()
 async def cmd_start(message: types.Message):
     # Узнаем ид пользователя.
     user_id = message.from_user.id
+    await message.answer(f"{user_id}")
+    print(user_id)
     # Авторизация
     if user_id in config.users:
         print("Пользователь авторизован.")
         await message.answer("Привет! Я бот короче.")
+        await message.answer(f"{user_id}")
 
 # Обработчик команды /start
 @dp.message(Command("report"))
@@ -32,12 +35,18 @@ async def cmd_start(message: types.Message):
     # Авторизация
     if user_id in config.users:
         print("Пользователь авторизован.")
+        master_user_id = list_of_masters.dict_of_masters_tg_id_user_id[user_id]
+        master = list_of_masters.dict_of_masters_user_id_name[master_user_id]
+        print(master)
         # Определим сегодняшнюю дату.
         date_now = datetime.now()
         date_now = date_now.strftime("%d.%m.%Y")
-        tasks = await parser_user.get_service(date=date_now, master=list_of_masters.dict_of_masters_tg_id[user_id])
+        service = await parser_user.get_service(date=date_now, master=list_of_masters.dict_of_masters_tg_id_user_id[user_id])
+        connection_athome = await parser_user.get_connections_athome(date=date_now, master=list_of_masters.dict_of_masters_tg_id_user_id[user_id])
+        # connection_et = await parser_user.get_connections_et(date=date_now, master=list_of_masters.dict_of_masters_tg_id[user_id])
 
-        text_to_bot = create_text.create_text_to_bot(tasks)
+        # Сделаем строку для отправки боту.
+        text_to_bot = create_text.create_text_to_bot(master, service, connection_athome)
 
 
         await message.answer(text_to_bot)
