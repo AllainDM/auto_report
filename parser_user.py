@@ -173,6 +173,63 @@ async def get_connections_athome(date, master=877):
     return answer
 
 
+async def get_connections_et(date, master=877):
+    url_task = "https://us.gblnet.net/task/"
+    start_date = date
+    # start_date = "23.02.2025"
+    end_date = start_date
+    link = (f"https://us.gblnet.net/customer_list?billing0_value=1&filter_selector0="
+            f"billing&billing0_value=1&filter_selector1="
+            f"agreement_date&agreement_date1_value={start_date}&filter_selector2="
+            f"customer_type&customer_type2_value=1&filter_selector3=tariff&tariff3_value2="
+            f"2&tariff3_value=-501&filter_selector4=tariff&tariff4_value2=2&tariff4_value="
+            f"-500&filter_selector5=tariff&tariff5_value2=2&tariff5_value="
+            f"1083&filter_selector6=customer_mark&customer_mark6_value="
+            f"66&filter_selector7=tariff&tariff7_value2=2&tariff7_value="
+            f"1088&filter_selector8=tariff&tariff8_value2=2&tariff8_value="
+            f"5788&filter_selector9=tariff&tariff9_value2=2&tariff9_value="
+            f"12676&filter_group_by=")
+    print(link)
+    # try:
+    # Сразу подставим заголовок с токеном.
+    HEADERS["_csrf"] = csrf[1:-3]
+    html = session_users.get(link, headers=HEADERS)
+    answer = []
+    if html.status_code == 200:
+        # print("Код ответа 200")
+        soup = BeautifulSoup(html.text, 'lxml')
+        # print(f"soup {soup}")
+        table = soup.find_all('tr', class_="cursor_pointer")
+        print(f"Количество карточек: {len(table)}")
+        master_name = list_of_masters.dict_of_masters_user_id_name[master]
+        print(f"master_name {master_name}")
+        for cards in table:
+            card = cards.find_all('td')
+            # Мастера из карточек
+            master_from_user = card[5].text.strip()
+            master_from_user = master_from_user.split(" ")
+            master_from_user = master_from_user[0]
+            print(master_from_user)
+
+            # Мастер которого ищем в карточках
+            master_for_search = master_name.split(" ")
+            master_for_search = master_for_search[0]
+
+            if master_from_user == master_for_search:
+                print(f"Найдено совпадение.")
+                client_ls = card[7].text.strip()
+                client_ls = client_ls[:8]
+
+
+                answer.append([client_ls, master_for_search])
+
+    #
+    #
+    #
+    # # Вернем в основную функцию, для объединения отчетов разных брендов.
+    return answer
+
+
 
 
 
