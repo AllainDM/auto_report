@@ -99,24 +99,28 @@ def get_html(date, master=877):
         master_name = list_of_masters.dict_of_masters[master]
         print(f"master_name {master_name}")
         for card in table:
+            # Бренд возьмем по порядковому номеру.
+            # Находим строку таблицы
+            brand_row = card.find_all('td')
+            # print(f"row {brand_row[1].text.strip()}")
+            brand = brand_row[1].text.strip()
+
             # Ищем ссылку с id задания.
             task_link = card.find('a', href=lambda href: href and "/task/" in href)
-            task_num = task_link.text
-            # Ищем последний комментарий.
+            task_num = task_link.text.strip()
+            # print(f"task: {task_num}")
+
+            # Ищем последний комментарий для определения Мастера.
             last_comment = card.find('td', id=f"td_{task_num}_comment_full_Id")
             # print(last_comment.text)
             match = re.search(r'[А-Яа-я]+\s[А-Яа-я]+\s[А-Яа-я]+', last_comment.text)
+            fio = match.group(0).strip()
 
-            if match:
-                fio = match.group(0)
-                print("ФИО:", fio)
-            else:
-                print("ФИО не найдено")
+            answer.append([fio, brand, task_num])
 
-            # print(task_num)
-        # for i in task_links:
-        #     if i.text.isdigit():
-        #         task_num = i.text
+
+
+
 
 
     # Вернем в основную функцию, для обьединения отчетов разных брендов.
