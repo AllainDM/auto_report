@@ -73,7 +73,7 @@ def create_users_sessions():
 response_users = create_users_sessions()
 
 
-def get_html(date, master=877):
+async def get_service(date, master=877):
     url_task = "https://us.gblnet.net/task/"
     start_date = date
     # start_date = "23.02.2025"
@@ -96,7 +96,7 @@ def get_html(date, master=877):
         # print(f"soup {soup}")
         table = soup.find_all('tr', class_="cursor_pointer")
         print(f"Количество карточек: {len(table)}")
-        master_name = list_of_masters.dict_of_masters[master]
+        master_name = list_of_masters.dict_of_masters_user_id[master]
         print(f"master_name {master_name}")
         for card in table:
             # Бренд возьмем по порядковому номеру.
@@ -118,7 +118,50 @@ def get_html(date, master=877):
 
             answer.append([fio, brand, task_num])
 
+async def get_service(date, master=877):
+    url_task = "https://us.gblnet.net/task/"
+    start_date = date
+    # start_date = "23.02.2025"
+    end_date = start_date
+    link = (f"https://us.gblnet.net/task_list?employee_id0={master}&filter_selector0="
+            f"task_staff_wo_division&employee_find_input=&employee_id0={master}&"
+            f"filter_selector1=task_state&task_state1_value=2&filter_selector2="
+            f"date_finish&date_finish2_value2=3&date_finish2_date1={start_date}+00%3A00&"
+            f"date_finish2_date2={end_date}+23%3A59&date_finish2_value=&filter_group_by=")
+    print(link)
+    # try:
+    # Сразу подставим заголовок с токеном.
+    HEADERS["_csrf"] = csrf[1:-3]
+    html = session_users.get(link, headers=HEADERS)
+    answer = []
+    brand = "ЕТ"
+    if html.status_code == 200:
+        # print("Код ответа 200")
+        soup = BeautifulSoup(html.text, 'lxml')
+        # print(f"soup {soup}")
+        table = soup.find_all('tr', class_="cursor_pointer")
+        print(f"Количество карточек: {len(table)}")
+        master_name = list_of_masters.dict_of_masters_user_id[master]
+        print(f"master_name {master_name}")
+        for card in table:
+            # Бренд возьмем по порядковому номеру.
+            # Находим строку таблицы
+            brand_row = card.find_all('td')
+            # print(f"row {brand_row[1].text.strip()}")
+            brand = brand_row[1].text.strip()
 
+            # Ищем ссылку с id задания.
+            task_link = card.find('a', href=lambda href: href and "/task/" in href)
+            task_num = task_link.text.strip()
+            # print(f"task: {task_num}")
+
+            # Ищем последний комментарий для определения Мастера.
+            last_comment = card.find('td', id=f"td_{task_num}_comment_full_Id")
+            # print(last_comment.text)
+            match = re.search(r'[А-Яа-я]+\s[А-Яа-я]+\s[А-Яа-я]+', last_comment.text)
+            fio = match.group(0).strip()
+
+            answer.append([fio, brand, task_num])
 
 
 
