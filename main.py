@@ -35,6 +35,7 @@ async def cmd_start(message: types.Message):
     # Авторизация
     if user_id in config.users:
         print("Пользователь авторизован.")
+        await message.answer("Идет подготовка отчёта...")
         master_user_id = list_of_masters.dict_of_masters_tg_id_user_id[user_id]
         master = list_of_masters.dict_of_masters_user_id_name[master_user_id]
         print(master)
@@ -44,7 +45,7 @@ async def cmd_start(message: types.Message):
         service = await parser_user.get_service(date=date_now, master=list_of_masters.dict_of_masters_tg_id_user_id[user_id])
         connection_athome = await parser_user.get_connections_athome(date=date_now, master=list_of_masters.dict_of_masters_tg_id_user_id[user_id])
         connection_et = await parser_user.get_connections_et(date=date_now, master=list_of_masters.dict_of_masters_tg_id_user_id[user_id])
-        print(f"connection_et {connection_et}")
+        # print(f"connection_et {connection_et}")
 
         # Сделаем строку для отправки боту.
         text_to_bot = create_text.create_text_to_bot(master, service, connection_athome, connection_et)

@@ -78,10 +78,16 @@ async def get_service(date, master=877):
     start_date = date
     # start_date = "23.02.2025"
     end_date = start_date
-    link = (f"https://us.gblnet.net/task_list?employee_id0={master}&filter_selector0="
+    link2 = (f"https://us.gblnet.net/task_list?employee_id0={master}&filter_selector0="
             f"task_staff_wo_division&employee_find_input=&employee_id0={master}&"
             f"filter_selector1=task_state&task_state1_value=2&filter_selector2="
             f"date_finish&date_finish2_value2=3&date_finish2_date1={start_date}+00%3A00&"
+            f"date_finish2_date2={end_date}+23%3A59&date_finish2_value=&filter_group_by=")
+
+    link = (f"https://us.gblnet.net/task_list?employee_id0={master}&filter_selector0="
+            f"task_staff_wo_division&employee_find_input=&employee_id0={master}&"
+            f"filter_selector1=task_state&task_state1_value=2&filter_selector2="
+            f"date_finish&date_finish2_value2=1&date_finish2_date1={start_date}+00%3A00&"
             f"date_finish2_date2={end_date}+23%3A59&date_finish2_value=&filter_group_by=")
     print(link)
     # try:
@@ -110,6 +116,15 @@ async def get_service(date, master=877):
             task_num = task_link.text.strip()
             # print(f"task: {task_num}")
 
+            # Ищем тип задания
+            task_type = card.find('td', id=f"td_{task_num}_description_full_Id")
+            task_type = task_type.find('b')
+            print(f"task_type {task_type.text.strip()}")
+            task_type = task_type.text.strip()
+            # Подключение интернета игнорируем.
+            if task_type == "Подключение Интернет":
+                continue
+
             # Ищем последний комментарий для определения Мастера.
             last_comment = card.find('td', id=f"td_{task_num}_comment_full_Id")
             # print(last_comment.text)
@@ -118,6 +133,7 @@ async def get_service(date, master=877):
             # Добавляем если последний коммент от текущего мастера.
             if fio == master_name:
                 answer.append([fio, brand, task_num])
+
 
     # Вернем в основную функцию, для объединения отчетов разных брендов.
     return answer
@@ -152,7 +168,7 @@ async def get_connections_athome(date, master=877):
             master_from_user = card[5].text.strip()
             master_from_user = master_from_user.split(" ")
             master_from_user = master_from_user[0]
-            print(master_from_user)
+            # print(master_from_user)
 
             # Мастер которого ищем в карточках
             master_for_search = master_name.split(" ")
@@ -160,6 +176,7 @@ async def get_connections_athome(date, master=877):
 
             if master_from_user == master_for_search:
                 print(f"Найдено совпадение.")
+                print(master_from_user)
                 client_ls = card[7].text.strip()
                 client_ls = client_ls[:-10]
 
@@ -209,7 +226,7 @@ async def get_connections_et(date, master=877):
             master_from_user = card[5].text.strip()
             master_from_user = master_from_user.split(" ")
             master_from_user = master_from_user[0]
-            print(master_from_user)
+            # print(master_from_user)
 
             # Мастер которого ищем в карточках
             master_for_search = master_name.split(" ")
@@ -217,6 +234,7 @@ async def get_connections_et(date, master=877):
 
             if master_from_user == master_for_search:
                 print(f"Найдено совпадение.")
+                print(master_from_user)
                 client_ls = card[7].text.strip()
                 client_ls = client_ls[:-10]
 
