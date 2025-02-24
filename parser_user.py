@@ -161,7 +161,7 @@ async def get_connections_athome(date, master=877):
             if master_from_user == master_for_search:
                 print(f"Найдено совпадение.")
                 client_ls = card[7].text.strip()
-                client_ls = client_ls[:8]
+                client_ls = client_ls[:-10]
 
 
                 answer.append([client_ls, master_for_search])
@@ -218,7 +218,7 @@ async def get_connections_et(date, master=877):
             if master_from_user == master_for_search:
                 print(f"Найдено совпадение.")
                 client_ls = card[7].text.strip()
-                client_ls = client_ls[:8]
+                client_ls = client_ls[:-10]
 
 
                 answer.append([client_ls, master_for_search])

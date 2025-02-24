@@ -47,7 +47,7 @@ async def cmd_start(message: types.Message):
         print(f"connection_et {connection_et}")
 
         # Сделаем строку для отправки боту.
-        text_to_bot = create_text.create_text_to_bot(master, service, connection_athome)
+        text_to_bot = create_text.create_text_to_bot(master, service, connection_athome, connection_et)
 
 
         await message.answer(text_to_bot)
@@ -66,20 +66,9 @@ async def echo(message: types.Message):
 
 
 async def main():
-    await dp.start_polling(bot)
-
-    # tasks = await parser_user.get_html(date="23.02.2025", master=234)
-    # print(tasks)
-    # text_to_bot = create_text.create_text_to_bot(tasks)
-    #
-    # tasks = await parser_user.get_html(date="23.02.2025", master=569)
-    # print(tasks)
-    # text_to_bot = create_text.create_text_to_bot(tasks)
-
-
+    await dp.start_polling(bot, allowed_updates=[])
 
 
 if __name__ == "__main__":
-    # main()
     asyncio.run(main())
 

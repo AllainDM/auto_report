@@ -1,5 +1,5 @@
 
-def create_text_to_bot(master, service, connection_athome):
+def create_text_to_bot(master, service, connection_athome, connection_et):
     # # Фамилию мастера возьмем из первой заявки
     # # TODO необходимо решить с однофамильцами, пока достается еще и имя, но его не читает report
     # master = text_list[0][0].split(" ")
@@ -11,7 +11,7 @@ def create_text_to_bot(master, service, connection_athome):
     at_serv = 0         # Количество обычных сервисов.
     at_serv_list = []   # Список для номеров сервисов.
 
-    et_int = 0
+    et_int = len(connection_et)
     et_int_pri = 0      # Привлеченные. Не умеет извлекать, но в шаблон пишем.
     et_tv = 0
     et_tv_pri = 0       # Привлеченные. Не умеет извлекать, но в шаблон пишем.
@@ -29,13 +29,17 @@ def create_text_to_bot(master, service, connection_athome):
             et_serv += 1
             et_serv_list.append(i[2])
 
-    # Список ли подключений
+    # Список подключений
     list_athome_connection = [i[0] for i in connection_athome]
     print(f"list_athome_connection {list_athome_connection}")
+
+    list_et_connection = [i[0] for i in connection_et]
+    print(f"list_athome_connection {list_et_connection}")
 
     at_serv_str = " ".join(at_serv_list)
     et_serv_str = " ".join(et_serv_list)
     athome_connection_ls_str =  " ".join(list_athome_connection)
+    et_connection_ls_str =  " ".join(list_et_connection)
 
 
     answer = (f"{master} \n\n"
@@ -45,7 +49,7 @@ def create_text_to_bot(master, service, connection_athome):
               f"домофон {et_dom}({et_dom_pri} прив), "
               f"сервис интернет {et_serv} {et_serv_str}, "
               f"сервис ТВ {et_serv_tv} \n\n"
-              f"Подключения ЛС: {athome_connection_ls_str} \n\n"
+              f"Подключения ЛС: {athome_connection_ls_str} {et_connection_ls_str}\n\n"
               )
 
     print(answer)
