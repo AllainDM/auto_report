@@ -22,7 +22,7 @@ async def cmd_start(message: types.Message):
     await message.answer(f"{user_id}")
     print(user_id)
     # Авторизация
-    if user_id in config.users:
+    if user_id in list_of_masters.dict_of_masters_tg_id_user_id:
         print("Пользователь авторизован.")
         await message.answer("Привет! Я бот короче.")
         await message.answer(f"{user_id}")
@@ -33,7 +33,7 @@ async def cmd_start(message: types.Message):
     # Узнаем ид пользователя.
     user_id = message.from_user.id
     # Авторизация
-    if user_id in config.users:
+    if user_id in list_of_masters.dict_of_masters_tg_id_user_id:
         print("Пользователь авторизован.")
         await message.answer("Идет подготовка отчёта...")
         master_user_id = list_of_masters.dict_of_masters_tg_id_user_id[user_id]
@@ -60,7 +60,7 @@ async def echo(message: types.Message):
     # Узнаем ид пользователя.
     user_id = message.from_user.id
     # Авторизация
-    if user_id in config.users:
+    if user_id in list_of_masters.dict_of_masters_tg_id_user_id:
         print("Пользователь авторизован.")
         await message.answer(f"Вы сказали: {message.text}")
 
