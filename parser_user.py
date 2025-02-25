@@ -122,9 +122,9 @@ async def get_service(date, master=877):
             print(f"task_type {task_type.text.strip()}")
             task_type = task_type.text.strip()
             # Подключение интернета игнорируем.
-            if task_type == "Подключение Интернет":
+            if task_type == "Подключение Интернет" or task_type == "Промоутер - Подключение Интернет":
                 continue
-            if task_type == "Подключение ТВ":
+            if task_type == "Подключение ТВ" or task_type == "Промоутер - Подключение ТВ":
                 continue
             if task_type == "Подключение домофона":
                 # TODO нужна отдельная функция для домофонов
