@@ -53,6 +53,15 @@ async def cmd_start(message: types.Message):
 
         await message.answer(text_to_bot)
 
+        # Так же отправим разработчику при необходимости.
+        if config.is_test:
+            # print(f"user_id {user_id}")
+            # print(f"config.tg_user_id {config.tg_user_id}")
+            # Два раза не отправляем
+            if str(user_id) != config.tg_user_id:
+                await bot.send_message(chat_id=config.tg_user_id, text=text_to_bot)
+
+
 
 # Обработчик текстовых сообщений
 @dp.message()
