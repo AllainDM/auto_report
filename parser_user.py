@@ -124,6 +124,11 @@ async def get_service(date, master=877):
             # Подключение интернета игнорируем.
             if task_type == "Подключение Интернет":
                 continue
+            if task_type == "Подключение ТВ":
+                continue
+            if task_type == "Подключение домофона":
+                # TODO нужна отдельная функция для домофонов
+                continue
 
             # Ищем последний комментарий для определения Мастера.
             last_comment = card.find('td', id=f"td_{task_num}_comment_full_Id")
