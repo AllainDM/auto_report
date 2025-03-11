@@ -24,7 +24,7 @@ logging.critical("Это критическая ошибка")
 logger = logging.getLogger(__name__)
 
 
-session = requests.Session()
+# session = requests.Session()
 
 url_login_get = "https://us.gblnet.net/"
 url_login = "https://us.gblnet.net/body/login"
@@ -39,51 +39,84 @@ data_users = {
     "username": config.loginUS,
     "password": config.pswUS
 }
+
 # Создание сессии, получение токена и авторизация
+# session_users = requests.Session()
+#
+# req = session_users.get(url_login_get)
+#
+# csrf = None
+#
+# def get_token():
+#     global csrf
+#     soup = BeautifulSoup(req.content, 'html.parser')
+#     # logging.debug(soup)
+#     logging.debug("###################")
+#     scripts = soup.find_all('script')
+#
+#     for script in scripts:
+#         if script.string is not None:
+#             # logging.debug(script.string)
+#             script_lst = script.string.split(" ")
+#             # logging.debug(script_lst)
+#             for num, val in enumerate(script_lst):
+#                 if val == "_csrf:":
+#                     csrf = script_lst[num+1]
+#     logging.debug(f"csrf {csrf}")
+#
+# get_token()
+#
+#
+# def create_users_sessions():
+#     while True:
+#         try:
+#             data_users["_csrf"] = csrf[1:-3]
+#             # logging.debug(f"data_users {data_users}")
+#             response_users2 = session_users.post(url_login, data=data_users, headers=HEADERS).text
+#             # logging.debug("Сессия Юзера создана 2")
+#             # logging.debug(f"response_users2 {response_users2}")
+#             return response_users2
+#         except ConnectionError:
+#             logging.debug("Ошибка создания сессии")
+#             # TODO функция отправки тут отсутствует
+#             # send_telegram("Ошибка создания сессии UserSide, повтор запроса через 5 минут")
+#             # time.sleep(300)
+#
+#
+# response_users = create_users_sessions()
 
-session_users = requests.Session()
-
-req = session_users.get(url_login_get)
-
-csrf = None
-
-def get_token():
-    global csrf
+# Новый способ получения токена и авторизации.
+def get_token(session_users):
+    req = session_users.get(url_login_get)
     soup = BeautifulSoup(req.content, 'html.parser')
-    # logging.debug(soup)
-    logging.debug("###################")
+    # print(soup)
+    # print("###################")
     scripts = soup.find_all('script')
 
+    csrf = None
     for script in scripts:
         if script.string is not None:
-            # logging.debug(script.string)
             script_lst = script.string.split(" ")
-            # logging.debug(script_lst)
             for num, val in enumerate(script_lst):
                 if val == "_csrf:":
                     csrf = script_lst[num+1]
-    logging.debug(f"csrf {csrf}")
-
-get_token()
-
+                    break
+        if csrf:
+            break
+    print(f"csrf {csrf}")
+    return csrf[1:-3] if csrf else None
 
 def create_users_sessions():
-    while True:
-        try:
-            data_users["_csrf"] = csrf[1:-3]
-            # logging.debug(f"data_users {data_users}")
-            response_users2 = session_users.post(url_login, data=data_users, headers=HEADERS).text
-            # logging.debug("Сессия Юзера создана 2")
-            # logging.debug(f"response_users2 {response_users2}")
-            return response_users2
-        except ConnectionError:
-            logging.debug("Ошибка создания сессии")
-            # TODO функция отправки тут отсутствует
-            # send_telegram("Ошибка создания сессии UserSide, повтор запроса через 5 минут")
-            # time.sleep(300)
+    session_users = requests.Session()
+    csrf = get_token(session_users)
+    if not csrf:
+        raise Exception("CSRF token not found")
 
-
-response_users = create_users_sessions()
+    data_users["_csrf"] = csrf
+    response_users2 = session_users.post(url_login, data=data_users, headers=HEADERS)
+    if response_users2.status_code != 200:
+        raise Exception("Failed to create user session")
+    return session_users
 
 
 async def get_service(date, master=877):
@@ -104,8 +137,15 @@ async def get_service(date, master=877):
             f"date_finish2_date2={end_date}+23%3A59&date_finish2_value=&filter_group_by=")
     logging.debug(link)
     # try:
-    # Сразу подставим заголовок с токеном.
-    HEADERS["_csrf"] = csrf[1:-3]
+
+    # Новый способ получения токена и авторизации.
+    session_users = create_users_sessions()
+
+    # Новый способ получения токена и авторизации.
+    HEADERS["_csrf"] = data_users["_csrf"]
+    # # Сразу подставим заголовок с токеном.
+    # HEADERS["_csrf"] = csrf[1:-3]
+
     html = session_users.get(link, headers=HEADERS)
     answer = []
     brand = "ЕТ"
