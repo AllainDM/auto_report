@@ -1,5 +1,7 @@
-from datetime import datetime
+
 import re
+import logging
+from datetime import datetime
 
 import requests
 from bs4 import BeautifulSoup
@@ -9,6 +11,17 @@ import lxml
 import config
 import list_of_masters
 # import address_filter
+
+# Настройка логирования
+logging.basicConfig(level=logging.INFO)
+
+logging.debug("Это отладочное сообщение")
+logging.info("Это информационное сообщение")
+logging.warning("Это предупреждение")
+logging.error("Это ошибка")
+logging.critical("Это критическая ошибка")
+
+logger = logging.getLogger(__name__)
 
 
 session = requests.Session()
@@ -37,19 +50,19 @@ csrf = None
 def get_token():
     global csrf
     soup = BeautifulSoup(req.content, 'html.parser')
-    # print(soup)
-    print("###################")
+    # logging.debug(soup)
+    logging.debug("###################")
     scripts = soup.find_all('script')
 
     for script in scripts:
         if script.string is not None:
-            # print(script.string)
+            # logging.debug(script.string)
             script_lst = script.string.split(" ")
-            # print(script_lst)
+            # logging.debug(script_lst)
             for num, val in enumerate(script_lst):
                 if val == "_csrf:":
                     csrf = script_lst[num+1]
-    print(f"csrf {csrf}")
+    logging.debug(f"csrf {csrf}")
 
 get_token()
 
@@ -58,13 +71,13 @@ def create_users_sessions():
     while True:
         try:
             data_users["_csrf"] = csrf[1:-3]
-            # print(f"data_users {data_users}")
+            # logging.debug(f"data_users {data_users}")
             response_users2 = session_users.post(url_login, data=data_users, headers=HEADERS).text
-            # print("Сессия Юзера создана 2")
-            # print(f"response_users2 {response_users2}")
+            # logging.debug("Сессия Юзера создана 2")
+            # logging.debug(f"response_users2 {response_users2}")
             return response_users2
         except ConnectionError:
-            print("Ошибка создания сессии")
+            logging.debug("Ошибка создания сессии")
             # TODO функция отправки тут отсутствует
             # send_telegram("Ошибка создания сессии UserSide, повтор запроса через 5 минут")
             # time.sleep(300)
@@ -89,7 +102,7 @@ async def get_service(date, master=877):
             f"filter_selector1=task_state&task_state1_value=2&filter_selector2="
             f"date_finish&date_finish2_value2=1&date_finish2_date1={start_date}+00%3A00&"
             f"date_finish2_date2={end_date}+23%3A59&date_finish2_value=&filter_group_by=")
-    print(link)
+    logging.debug(link)
     # try:
     # Сразу подставим заголовок с токеном.
     HEADERS["_csrf"] = csrf[1:-3]
@@ -97,42 +110,45 @@ async def get_service(date, master=877):
     answer = []
     brand = "ЕТ"
     if html.status_code == 200:
-        # print("Код ответа 200")
+        # logging.debug("Код ответа 200")
         soup = BeautifulSoup(html.text, 'lxml')
-        # print(f"soup {soup}")
+        # logging.debug(f"soup {soup}")
         table = soup.find_all('tr', class_="cursor_pointer")
-        print(f"Количество карточек: {len(table)}")
+        logging.debug(f"Количество карточек: {len(table)}")
         master_name = list_of_masters.dict_of_masters_user_id_name[master]
-        print(f"master_name {master_name}")
+        logging.debug(f"master_name {master_name}")
         for card in table:
             # Бренд возьмем по порядковому номеру.
             # Находим строку таблицы
             brand_row = card.find_all('td')
-            # print(f"row {brand_row[1].text.strip()}")
+            # logging.debug(f"row {brand_row[1].text.strip()}")
             brand = brand_row[1].text.strip()
 
             # Ищем ссылку с id задания.
             task_link = card.find('a', href=lambda href: href and "/task/" in href)
             task_num = task_link.text.strip()
-            # print(f"task: {task_num}")
+            # logging.debug(f"task: {task_num}")
 
             # Ищем тип задания
             task_type = card.find('td', id=f"td_{task_num}_description_full_Id")
             task_type = task_type.find('b')
-            print(f"task_type {task_type.text.strip()}")
+            logging.debug(f"task_type {task_type.text.strip()}")
             task_type = task_type.text.strip()
             # Подключение интернета игнорируем.
             if task_type == "Подключение Интернет" or task_type == "Промоутер - Подключение Интернет":
                 continue
             if task_type == "Подключение ТВ" or task_type == "Промоутер - Подключение ТВ":
                 continue
+            if task_type == "Подключить быстрее":
+                continue
             if task_type == "Подключение домофона":
+
                 # TODO нужна отдельная функция для домофонов
                 continue
 
             # Ищем последний комментарий для определения Мастера.
             last_comment = card.find('td', id=f"td_{task_num}_comment_full_Id")
-            # print(last_comment.text)
+            # logging.debug(last_comment.text)
             match = re.search(r'[А-Яа-я]+\s[А-Яа-я]+\s[А-Яа-я]+', last_comment.text)
             fio = match.group(0).strip()
             # Добавляем если последний коммент от текущего мастера.
@@ -153,35 +169,35 @@ async def get_connections_athome(date, master=877):
             f"billing&billing0_value=1&filter_selector1=agreement_date&agreement_date1_value="
             f"{date}&filter_selector2=customer_type&customer_type2_value="
             f"1&filter_selector3=customer_mark&customer_mark3_value=53&filter_group_by=")
-    print(link)
+    logging.debug(link)
     # try:
     # Сразу подставим заголовок с токеном.
     HEADERS["_csrf"] = csrf[1:-3]
     html = session_users.get(link, headers=HEADERS)
     answer = []
     if html.status_code == 200:
-        # print("Код ответа 200")
+        # logging.debug("Код ответа 200")
         soup = BeautifulSoup(html.text, 'lxml')
-        # print(f"soup {soup}")
+        # logging.debug(f"soup {soup}")
         table = soup.find_all('tr', class_="cursor_pointer")
-        print(f"Количество карточек: {len(table)}")
+        logging.debug(f"Количество карточек: {len(table)}")
         master_name = list_of_masters.dict_of_masters_user_id_name[master]
-        print(f"master_name {master_name}")
+        logging.debug(f"master_name {master_name}")
         for cards in table:
             card = cards.find_all('td')
             # Мастера из карточек
             master_from_user = card[5].text.strip()
             master_from_user = master_from_user.split(" ")
             master_from_user = master_from_user[0]
-            # print(master_from_user)
+            # logging.debug(master_from_user)
 
             # Мастер которого ищем в карточках
             master_for_search = master_name.split(" ")
             master_for_search = master_for_search[0]
 
             if master_from_user == master_for_search:
-                print(f"Найдено совпадение.")
-                print(master_from_user)
+                logging.debug(f"Найдено совпадение.")
+                logging.debug(master_from_user)
                 client_ls = card[7].text.strip()
                 client_ls = client_ls[:-10]
 
@@ -211,35 +227,35 @@ async def get_connections_et(date, master=877):
             f"1088&filter_selector8=tariff&tariff8_value2=2&tariff8_value="
             f"5788&filter_selector9=tariff&tariff9_value2=2&tariff9_value="
             f"12676&filter_group_by=")
-    print(link)
+    logging.debug(link)
     # try:
     # Сразу подставим заголовок с токеном.
     HEADERS["_csrf"] = csrf[1:-3]
     html = session_users.get(link, headers=HEADERS)
     answer = []
     if html.status_code == 200:
-        # print("Код ответа 200")
+        # logging.debug("Код ответа 200")
         soup = BeautifulSoup(html.text, 'lxml')
-        # print(f"soup {soup}")
+        # logging.debug(f"soup {soup}")
         table = soup.find_all('tr', class_="cursor_pointer")
-        print(f"Количество карточек: {len(table)}")
+        logging.debug(f"Количество карточек: {len(table)}")
         master_name = list_of_masters.dict_of_masters_user_id_name[master]
-        print(f"master_name {master_name}")
+        logging.debug(f"master_name {master_name}")
         for cards in table:
             card = cards.find_all('td')
             # Мастера из карточек
             master_from_user = card[5].text.strip()
             master_from_user = master_from_user.split(" ")
             master_from_user = master_from_user[0]
-            # print(master_from_user)
+            # logging.debug(master_from_user)
 
             # Мастер которого ищем в карточках
             master_for_search = master_name.split(" ")
             master_for_search = master_for_search[0]
 
             if master_from_user == master_for_search:
-                print(f"Найдено совпадение.")
-                print(master_from_user)
+                logging.debug(f"Найдено совпадение.")
+                logging.debug(master_from_user)
                 client_ls = card[7].text.strip()
                 client_ls = client_ls[:-10]
 
