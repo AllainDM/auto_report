@@ -210,9 +210,14 @@ async def get_connections_athome(date, master=877):
             f"{date}&filter_selector2=customer_type&customer_type2_value="
             f"1&filter_selector3=customer_mark&customer_mark3_value=53&filter_group_by=")
     logging.debug(link)
-    # try:
-    # Сразу подставим заголовок с токеном.
-    HEADERS["_csrf"] = csrf[1:-3]
+    # Новый способ получения токена и авторизации.
+    session_users = create_users_sessions()
+
+    # Новый способ получения токена и авторизации.
+    HEADERS["_csrf"] = data_users["_csrf"]
+    # # Сразу подставим заголовок с токеном.
+    # HEADERS["_csrf"] = csrf[1:-3]
+
     html = session_users.get(link, headers=HEADERS)
     answer = []
     if html.status_code == 200:
@@ -269,8 +274,14 @@ async def get_connections_et(date, master=877):
             f"12676&filter_group_by=")
     logging.debug(link)
     # try:
-    # Сразу подставим заголовок с токеном.
-    HEADERS["_csrf"] = csrf[1:-3]
+    # Новый способ получения токена и авторизации.
+    session_users = create_users_sessions()
+
+    # Новый способ получения токена и авторизации.
+    HEADERS["_csrf"] = data_users["_csrf"]
+    # # Сразу подставим заголовок с токеном.
+    # HEADERS["_csrf"] = csrf[1:-3]
+
     html = session_users.get(link, headers=HEADERS)
     answer = []
     if html.status_code == 200:
