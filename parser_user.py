@@ -135,7 +135,7 @@ async def get_service(date, master=877):
             f"filter_selector1=task_state&task_state1_value=2&filter_selector2="
             f"date_finish&date_finish2_value2=1&date_finish2_date1={start_date}+00%3A00&"
             f"date_finish2_date2={end_date}+23%3A59&date_finish2_value=&filter_group_by=")
-    logging.debug(link)
+    logging.info(link)
     # try:
 
     # Новый способ получения токена и авторизации.
@@ -272,7 +272,7 @@ async def get_connections_et(date, master=877):
             f"1088&filter_selector8=tariff&tariff8_value2=2&tariff8_value="
             f"5788&filter_selector9=tariff&tariff9_value2=2&tariff9_value="
             f"12676&filter_group_by=")
-    logging.debug(link)
+    logging.info(link)
     # try:
     # Новый способ получения токена и авторизации.
     session_users = create_users_sessions()
