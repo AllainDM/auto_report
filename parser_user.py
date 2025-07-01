@@ -135,6 +135,7 @@ async def get_service(date, master=877):
             f"filter_selector1=task_state&task_state1_value=2&filter_selector2="
             f"date_finish&date_finish2_value2=1&date_finish2_date1={start_date}+00%3A00&"
             f"date_finish2_date2={end_date}+23%3A59&date_finish2_value=&filter_group_by=")
+
     logging.info(link)
     # try:
 
@@ -261,7 +262,7 @@ async def get_connections_et(date, master=877):
     start_date = date
     # start_date = "23.02.2025"
     end_date = start_date
-    link = (f"https://us.gblnet.net/customer_list?billing0_value=1&filter_selector0="
+    link1 = (f"https://us.gblnet.net/customer_list?billing0_value=1&filter_selector0="
             f"billing&billing0_value=1&filter_selector1="
             f"agreement_date&agreement_date1_value={start_date}&filter_selector2="
             f"customer_type&customer_type2_value=1&filter_selector3=tariff&tariff3_value2="
@@ -272,6 +273,18 @@ async def get_connections_et(date, master=877):
             f"1088&filter_selector8=tariff&tariff8_value2=2&tariff8_value="
             f"5788&filter_selector9=tariff&tariff9_value2=2&tariff9_value="
             f"12676&filter_group_by=")
+
+    link = (f"https://us.gblnet.net/customer_list?billing0_value=1&filter_selector0="
+            f"billing&billing0_value=1&filter_selector1="
+            f"agreement_date&agreement_date1_value={start_date}&filter_selector2="
+            f"customer_type&customer_type2_value=1&filter_selector3="
+            f"tariff&tariff3_value2=2&tariff3_value=-501&filter_selector4="
+            "tariff&tariff4_value2=2&tariff4_value=-500&filter_selector5="
+            f"tariff&tariff5_value2=2&tariff5_value=1083&filter_selector7="
+            f"tariff&tariff7_value2=2&tariff7_value=1088&filter_selector8="
+            f"tariff&tariff8_value2=2&tariff8_value=5788&filter_selector9="
+            f"tariff&tariff9_value2=2&tariff9_value=12676&filter_group_by=")
+
     logging.info(link)
     # try:
     # Новый способ получения токена и авторизации.
