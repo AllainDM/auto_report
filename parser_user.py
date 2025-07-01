@@ -206,11 +206,24 @@ async def get_connections_athome(date, master=877):
     start_date = date
     # start_date = "23.02.2025"
     end_date = start_date
-    link = (f"https://us.gblnet.net/customer_list?billing0_value=1&filter_selector0="
+    link1 = (f"https://us.gblnet.net/customer_list?billing0_value=1&filter_selector0="
             f"billing&billing0_value=1&filter_selector1=agreement_date&agreement_date1_value="
             f"{date}&filter_selector2=customer_type&customer_type2_value="
             f"1&filter_selector3=customer_mark&customer_mark3_value=53&filter_group_by=")
-    logging.debug(link)
+
+
+    link = (f"https://us.gblnet.net/customer_list?billing0_value=1&filter_selector0="
+            f"billing&billing0_value=1&filter_selector1="
+            f"agreement_date&agreement_date1_value={date}&filter_selector2="
+            f"customer_type&customer_type2_value=1&filter_selector3="
+            f"tariff&tariff3_value2=2&tariff3_value=-501&filter_selector4="
+            "tariff&tariff4_value2=2&tariff4_value=-500&filter_selector5="
+            f"tariff&tariff5_value2=2&tariff5_value=1083&filter_selector7="
+            f"tariff&tariff7_value2=2&tariff7_value=1088&filter_selector8="
+            f"tariff&tariff8_value2=2&tariff8_value=5788&filter_selector9="
+            f"tariff&tariff9_value2=2&tariff9_value=12676&filter_group_by=")
+
+    logging.info(link)
     # Новый способ получения токена и авторизации.
     session_users = create_users_sessions()
 
@@ -244,8 +257,10 @@ async def get_connections_athome(date, master=877):
             if master_from_user == master_for_search:
                 logging.debug(f"Найдено совпадение.")
                 logging.debug(master_from_user)
-                client_ls = card[7].text.strip()
-                client_ls = client_ls[:-10]
+                # client_ls = card[7].text.strip()
+                # client_ls = client_ls[:-10]
+
+                client_ls = card[6].text.strip()
 
 
                 answer.append([client_ls, master_for_search])
@@ -262,6 +277,7 @@ async def get_connections_et(date, master=877):
     start_date = date
     # start_date = "23.02.2025"
     end_date = start_date
+    link = "https://us.gblnet.net/"
     link1 = (f"https://us.gblnet.net/customer_list?billing0_value=1&filter_selector0="
             f"billing&billing0_value=1&filter_selector1="
             f"agreement_date&agreement_date1_value={start_date}&filter_selector2="
@@ -274,7 +290,7 @@ async def get_connections_et(date, master=877):
             f"5788&filter_selector9=tariff&tariff9_value2=2&tariff9_value="
             f"12676&filter_group_by=")
 
-    link = (f"https://us.gblnet.net/customer_list?billing0_value=1&filter_selector0="
+    link2 = (f"https://us.gblnet.net/customer_list?billing0_value=1&filter_selector0="
             f"billing&billing0_value=1&filter_selector1="
             f"agreement_date&agreement_date1_value={start_date}&filter_selector2="
             f"customer_type&customer_type2_value=1&filter_selector3="
@@ -320,8 +336,10 @@ async def get_connections_et(date, master=877):
             if master_from_user == master_for_search:
                 logging.debug(f"Найдено совпадение.")
                 logging.debug(master_from_user)
-                client_ls = card[7].text.strip()
-                client_ls = client_ls[:-10]
+                # client_ls = card[7].text.strip()
+                # client_ls = client_ls[:-10]
+
+                client_ls = card[6].text.strip()
 
 
                 answer.append([client_ls, master_for_search])
