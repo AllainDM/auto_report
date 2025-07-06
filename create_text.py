@@ -21,13 +21,17 @@ def create_text_to_bot(master, service, connection_athome, connection_et):
     et_serv_list = []   # Список для номеров сервисов.
     et_serv_tv = 0
 
+    # for i in service:
+    #     if i[1] == 'Эт-Хоум':
+    #         at_serv += 1
+    #         at_serv_list.append(i[2])
+    #     elif i[1] == 'ЭлектронТелеком':
+    #         et_serv += 1
+    #         et_serv_list.append(i[2])
+
     for i in service:
-        if i[1] == 'Эт-Хоум':
-            at_serv += 1
-            at_serv_list.append(i[2])
-        elif i[1] == 'ЭлектронТелеком':
-            et_serv += 1
-            et_serv_list.append(i[2])
+        et_serv += 1
+        et_serv_list.append(i[2])
 
     # Список подключений
     list_athome_connection = [i[0] for i in connection_athome]
@@ -40,6 +44,11 @@ def create_text_to_bot(master, service, connection_athome, connection_et):
     et_serv_str = " ".join(et_serv_list)
     athome_connection_ls_str =  " ".join(list_athome_connection)
     et_connection_ls_str =  " ".join(list_et_connection)
+
+    # at_serv_str = " "
+    # et_serv_str = " ".join(service)
+    # athome_connection_ls_str =  " ".join(list_athome_connection)
+    # et_connection_ls_str =  " ".join(list_et_connection)
 
 
     answer = (f"{master} \n\n"

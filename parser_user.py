@@ -155,25 +155,27 @@ async def get_service(date, master=877):
         soup = BeautifulSoup(html.text, 'lxml')
         # logging.debug(f"soup {soup}")
         table = soup.find_all('tr', class_="cursor_pointer")
-        logging.debug(f"Количество карточек: {len(table)}")
+        logging.info(f"Количество карточек: {len(table)}")
         master_name = list_of_masters.dict_of_masters_user_id_name[master]
         logging.debug(f"master_name {master_name}")
         for card in table:
+
             # Бренд возьмем по порядковому номеру.
             # Находим строку таблицы
-            brand_row = card.find_all('td')
+            # brand_row = card.find_all('td')
             # logging.debug(f"row {brand_row[1].text.strip()}")
-            brand = brand_row[1].text.strip()
+            brand = "ET"
+            # brand = brand_row[1].text.strip()
 
             # Ищем ссылку с id задания.
             task_link = card.find('a', href=lambda href: href and "/task/" in href)
             task_num = task_link.text.strip()
-            # logging.debug(f"task: {task_num}")
+            logging.info(f"task: {task_num}")
 
             # Ищем тип задания
             task_type = card.find('td', id=f"td_{task_num}_description_full_Id")
             task_type = task_type.find('b')
-            logging.debug(f"task_type {task_type.text.strip()}")
+            logging.info(f"task_type {task_type.text.strip()}")
             task_type = task_type.text.strip()
             # Подключение интернета игнорируем.
             if task_type == "Подключение Интернет" or task_type == "Промоутер - Подключение Интернет":
@@ -189,16 +191,20 @@ async def get_service(date, master=877):
 
             # Ищем последний комментарий для определения Мастера.
             last_comment = card.find('td', id=f"td_{task_num}_comment_full_Id")
-            # logging.debug(last_comment.text)
+            logging.info(last_comment.text)
             match = re.search(r'[А-Яа-я]+\s[А-Яа-я]+\s[А-Яа-я]+', last_comment.text)
             fio = match.group(0).strip()
+            logging.info(fio)
+            logging.info(master_name)
             # Добавляем если последний коммент от текущего мастера.
             if fio == master_name:
                 answer.append([fio, brand, task_num])
+                print("Сервис добавлен")
 
 
     # Вернем в основную функцию, для объединения отчетов разных брендов.
-    return answer
+        print(answer)
+        return answer
 
 
 async def get_connections_athome(date, master=877):
