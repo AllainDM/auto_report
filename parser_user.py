@@ -241,9 +241,7 @@ async def get_connections_athome(date, master=877):
     html = session_users.get(link, headers=HEADERS)
     answer = []
     if html.status_code == 200:
-        # logging.debug("Код ответа 200")
         soup = BeautifulSoup(html.text, 'lxml')
-        # logging.debug(f"soup {soup}")
         table = soup.find_all('tr', class_="cursor_pointer")
         logging.debug(f"Количество карточек: {len(table)}")
         master_name = list_of_masters.dict_of_masters_user_id_name[master]
@@ -254,7 +252,6 @@ async def get_connections_athome(date, master=877):
             master_from_user = card[5].text.strip()
             master_from_user = master_from_user.split(" ")
             master_from_user = master_from_user[0]
-            # logging.debug(master_from_user)
 
             # Мастер которого ищем в карточках
             master_for_search = master_name.split(" ")
@@ -265,15 +262,8 @@ async def get_connections_athome(date, master=877):
                 logging.debug(master_from_user)
                 # client_ls = card[7].text.strip()
                 # client_ls = client_ls[:-10]
-
                 client_ls = card[6].text.strip()
-
-
                 answer.append([client_ls, master_for_search])
-
-    #
-    #
-    #
     # # Вернем в основную функцию, для объединения отчетов разных брендов.
     return answer
 
@@ -320,9 +310,7 @@ async def get_connections_et(date, master=877):
     html = session_users.get(link, headers=HEADERS)
     answer = []
     if html.status_code == 200:
-        # logging.debug("Код ответа 200")
         soup = BeautifulSoup(html.text, 'lxml')
-        # logging.debug(f"soup {soup}")
         table = soup.find_all('tr', class_="cursor_pointer")
         logging.debug(f"Количество карточек: {len(table)}")
         master_name = list_of_masters.dict_of_masters_user_id_name[master]
@@ -333,7 +321,6 @@ async def get_connections_et(date, master=877):
             master_from_user = card[5].text.strip()
             master_from_user = master_from_user.split(" ")
             master_from_user = master_from_user[0]
-            # logging.debug(master_from_user)
 
             # Мастер которого ищем в карточках
             master_for_search = master_name.split(" ")
@@ -344,15 +331,8 @@ async def get_connections_et(date, master=877):
                 logging.debug(master_from_user)
                 # client_ls = card[7].text.strip()
                 # client_ls = client_ls[:-10]
-
                 client_ls = card[6].text.strip()
-
-
                 answer.append([client_ls, master_for_search])
-
-    #
-    #
-    #
     # # Вернем в основную функцию, для объединения отчетов разных брендов.
     return answer
 
