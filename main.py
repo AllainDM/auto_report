@@ -57,7 +57,7 @@ async def cmd_start(message: types.Message):
         date_now = date_now.strftime("%d.%m.%Y")
         service = await parser_user.get_service(date=date_now, master=list_of_masters.dict_of_masters_tg_id_user_id[user_id])
         # connection_athome = await parser_user.get_connections_athome(date=date_now, master=list_of_masters.dict_of_masters_tg_id_user_id[user_id])
-        connection_et = await parser_user.get_connections_et(date=date_now, master=list_of_masters.dict_of_masters_tg_id_user_id[user_id])
+        connection_et = await parser_user.get_connections_athome(date=date_now, master=list_of_masters.dict_of_masters_tg_id_user_id[user_id])
         # logging.debug(f"connection_et {connection_et}")
 
         # Сделаем строку для отправки боту.
