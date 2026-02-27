@@ -210,7 +210,8 @@ async def get_service(date, master=877):
 async def get_connections_athome(date, master=877):
     url_task = "https://us.gblnet.net/task/"
     start_date = date
-    # start_date = "23.02.2025"
+    # start_date = "26.02.2026"
+    # date = "26.02.2026"
     end_date = start_date
     link1 = (f"https://us.gblnet.net/customer_list?billing0_value=1&filter_selector0="
             f"billing&billing0_value=1&filter_selector1=agreement_date&agreement_date1_value="
@@ -240,22 +241,51 @@ async def get_connections_athome(date, master=877):
 
     html = session_users.get(link, headers=HEADERS)
     answer = []
+
+
+    # if html.status_code == 200:
+    #     soup = BeautifulSoup(html.text, 'lxml')
+    #     table = soup.find_all('tr', class_="cursor_pointer")
+    #     logging.debug(f"Количество карточек: {len(table)}")
+    #     master_name = list_of_masters.dict_of_masters_user_id_name[master]
+    #     logging.debug(f"master_name {master_name}")
+    #     for cards in table:
+    #         card = cards.find_all('td')
+    #         # Мастера из карточек
+    #         master_from_user = card[5].text.strip()
+    #         master_from_user = master_from_user.split(" ")
+    #         master_from_user = master_from_user[0]
+    #
+    #         # Мастер которого ищем в карточках
+    #         master_for_search = master_name.split(" ")
+    #         master_for_search = master_for_search[0]
+    #
+    #         if master_from_user == master_for_search:
+    #             logging.debug(f"Найдено совпадение.")
+    #             logging.debug(master_from_user)
+    #             # client_ls = card[7].text.strip()
+    #             # client_ls = client_ls[:-10]
+    #             client_ls = card[6].text.strip()
+    #             answer.append([client_ls, master_for_search])
+
+
     if html.status_code == 200:
         soup = BeautifulSoup(html.text, 'lxml')
         table = soup.find_all('tr', class_="cursor_pointer")
         logging.debug(f"Количество карточек: {len(table)}")
-        master_name = list_of_masters.dict_of_masters_user_id_name[master]
+        master_name = list_of_masters.dict_of_masters_user_id_fio[master]
         logging.debug(f"master_name {master_name}")
         for cards in table:
             card = cards.find_all('td')
             # Мастера из карточек
             master_from_user = card[5].text.strip()
-            master_from_user = master_from_user.split(" ")
-            master_from_user = master_from_user[0]
+            # master_from_user = master_from_user.split(" ")
+            # master_from_user = master_from_user[0]
 
             # Мастер которого ищем в карточках
-            master_for_search = master_name.split(" ")
-            master_for_search = master_for_search[0]
+            master_for_search = master_name
+            # master_for_search = master_name.split(" ")
+            # master_for_search = master_for_search[0]
 
             if master_from_user == master_for_search:
                 logging.debug(f"Найдено совпадение.")
@@ -264,6 +294,7 @@ async def get_connections_athome(date, master=877):
                 # client_ls = client_ls[:-10]
                 client_ls = card[6].text.strip()
                 answer.append([client_ls, master_for_search])
+
     # # Вернем в основную функцию, для объединения отчетов разных брендов.
     return answer
 
@@ -271,7 +302,8 @@ async def get_connections_athome(date, master=877):
 async def get_connections_et(date, master=877):
     url_task = "https://us.gblnet.net/task/"
     start_date = date
-    # start_date = "23.02.2025"
+    # start_date = "26.02.2026"
+    # date = "26.02.2026"
     end_date = start_date
     link = "https://us.gblnet.net/"
     link1 = (f"https://us.gblnet.net/customer_list?billing0_value=1&filter_selector0="
@@ -309,22 +341,49 @@ async def get_connections_et(date, master=877):
 
     html = session_users.get(link, headers=HEADERS)
     answer = []
+
+    # if html.status_code == 200:
+    #     soup = BeautifulSoup(html.text, 'lxml')
+    #     table = soup.find_all('tr', class_="cursor_pointer")
+    #     logging.debug(f"Количество карточек: {len(table)}")
+    #     master_name = list_of_masters.dict_of_masters_user_id_name[master]
+    #     logging.debug(f"master_name {master_name}")
+    #     for cards in table:
+    #         card = cards.find_all('td')
+    #         # Мастера из карточек
+    #         master_from_user = card[5].text.strip()
+    #         master_from_user = master_from_user.split(" ")
+    #         master_from_user = master_from_user[0]
+    #
+    #         # Мастер которого ищем в карточках
+    #         master_for_search = master_name.split(" ")
+    #         master_for_search = master_for_search[0]
+    #
+    #         if master_from_user == master_for_search:
+    #             logging.debug(f"Найдено совпадение.")
+    #             logging.debug(master_from_user)
+    #             # client_ls = card[7].text.strip()
+    #             # client_ls = client_ls[:-10]
+    #             client_ls = card[6].text.strip()
+    #             answer.append([client_ls, master_for_search])
+
     if html.status_code == 200:
         soup = BeautifulSoup(html.text, 'lxml')
         table = soup.find_all('tr', class_="cursor_pointer")
         logging.debug(f"Количество карточек: {len(table)}")
-        master_name = list_of_masters.dict_of_masters_user_id_name[master]
+        master_name = list_of_masters.dict_of_masters_user_id_fio[master]
         logging.debug(f"master_name {master_name}")
         for cards in table:
             card = cards.find_all('td')
             # Мастера из карточек
             master_from_user = card[5].text.strip()
-            master_from_user = master_from_user.split(" ")
-            master_from_user = master_from_user[0]
+            # master_from_user = master_from_user.split(" ")
+            # master_from_user = master_from_user[0]
 
             # Мастер которого ищем в карточках
-            master_for_search = master_name.split(" ")
-            master_for_search = master_for_search[0]
+            master_for_search = master_name
+            # master_for_search = master_name.split(" ")
+            # master_for_search = master_for_search[0]
 
             if master_from_user == master_for_search:
                 logging.debug(f"Найдено совпадение.")
@@ -333,6 +392,7 @@ async def get_connections_et(date, master=877):
                 # client_ls = client_ls[:-10]
                 client_ls = card[6].text.strip()
                 answer.append([client_ls, master_for_search])
+
     # # Вернем в основную функцию, для объединения отчетов разных брендов.
     return answer
 
