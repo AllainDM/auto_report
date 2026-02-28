@@ -210,8 +210,8 @@ async def get_service(date, master=877):
 async def get_connections_athome(date, master=877):
     url_task = "https://us.gblnet.net/task/"
     start_date = date
-    # start_date = "26.02.2026"
-    # date = "26.02.2026"
+    # start_date = "27.02.2026"
+    # date = "27.02.2026"
     end_date = start_date
     link1 = (f"https://us.gblnet.net/customer_list?billing0_value=1&filter_selector0="
             f"billing&billing0_value=1&filter_selector1=agreement_date&agreement_date1_value="
@@ -302,8 +302,8 @@ async def get_connections_athome(date, master=877):
 async def get_connections_et(date, master=877):
     url_task = "https://us.gblnet.net/task/"
     start_date = date
-    # start_date = "26.02.2026"
-    # date = "26.02.2026"
+    # start_date = "27.02.2026"
+    # date = "27.02.2026"
     end_date = start_date
     link = "https://us.gblnet.net/"
     link1 = (f"https://us.gblnet.net/customer_list?billing0_value=1&filter_selector0="
